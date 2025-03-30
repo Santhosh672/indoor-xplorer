@@ -1,34 +1,40 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class DrawPath : MonoBehaviour
 {
-    NavMeshAgent agent;
-    Transform target;
+    Transform targetPos;
     LineRenderer lineRenderer;
     NavMeshPath path;
+    
+    int selectedValue;
+
+    [SerializeField] TMP_Dropdown dropdown;
+    [SerializeField] GameObject[] targets;
+    [SerializeField] NavMeshAgent agent;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        target = GameObject.Find("Target").GetComponent<Transform>();
         lineRenderer = GameObject.Find("LineRender").GetComponent<LineRenderer>();
         path = new NavMeshPath();
 
-        lineRenderer.positionCount = 0;
-        
+        lineRenderer.positionCount = 0; 
     }
 
     // Update is called once per frame
     void Update()
     {
-        DrawNavPath();
+        selectedValue = dropdown.value;
+        DrawNavPath(targets[selectedValue]);
     }
 
-    void DrawNavPath()
+    void DrawNavPath(GameObject target)
     {
-        agent.CalculatePath(target.position, path);
+        targetPos = target.transform;
+        agent.CalculatePath(targetPos.position, path);
         lineRenderer.positionCount = path.corners.Length;
         lineRenderer.SetPosition(0, transform.position);
 
